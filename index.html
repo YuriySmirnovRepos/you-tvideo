@@ -3,24 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link type="stylesheet" href="style.css">
+    <!-- <link type="stylesheet" href="normalize.css">
+    <link type="stylesheet" href="style.css"> -->
     <title>You-TVideo -- Удобный видеохостинг для тебя</title>
 </head>
 <body>
     <header class="header">
         <div class="container header__container">
             <a href="" class="header__link">
-                <img src="" alt="" class="header__logo">
+                <svg class="header__logo" viewBox="0 0 240 32" role="img" aria-label="Логотип сервиса You-TVideo">
+                    <use xlink:href="/image/sprite.svg#logo-orange"></use>
+                </svg>
             </a>
         </div>
+        <a href="/favorite.html" class="header__link header__link_favorite">Избранное</a>
     </header>
+
     <main>
         <section class="hero">
-            <div class="container hero__container"></div>
+            <div class="container hero__container">
+                <a href="/favorite.html" class="hero__link">Избранное</a>
+                <svg class="hero__logo" viewBox="0 0 360 48" role="img" aria-label="Логотип сервиса You-TVideo">
+                    <use xlink:href="/image/sprite.svg#logo-white"></use>
+                </svg>
+                <h1 class="hero__title">Смотри. Загружай. Создавай</h1>
+
+                <p class="hero__tagline">Удобный видеохостинг для тебя</p>
+            </div>
         </section>
 
         <section class="search">
-            
+            <form class="search__form">
+                <label for="" class="search__label"></label>
+            </form>
         </section>
 
         <section class="video-list"></section>
