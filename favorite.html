@@ -10,23 +10,31 @@
 <body>
     <header class="header">
         <div class="container header__container">
-            <a href="" class="header__link">
+            <a href="/index.html" class="header__link">
                 <svg class="header__logo" viewBox="0 0 240 32" role="img" aria-label="Логотип сервиса You-TVideo">
                     <use xlink:href="image/sprite.svg#logo-orange"></use>
                 </svg>
             </a>
         </div>
-        <a href="/favorite.html" class="header__link header__link_favorite">Избранное</a>
+        <a href="/favorite.html" class="header__link header__link_favorite">
+            <span>Избранное</span>
+            <svg class="header__icon">
+                <use xlink:href="image/sprite.svg#star-ob"></use>
+            </svg>
+        </a>
     </header>
 
     <main>
 
         <section class="search">
             <form class="search__form">
-                <label for="" class="search__label">
-                    <input type="search" class="search__input">
-                    <button class="search__btn" type="submit">Поиск</button>
-                </label>
+                <input type="search" class="search__input">
+                <button class="search__btn" type="submit">
+                    <span>Поиск</span>
+                    <svg class="search__icon">
+                        <use xlink:href="image/sprite.svg#search"></use>
+                    </svg>
+                </button>
             </form>
         </section>
 
