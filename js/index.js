@@ -21,34 +21,45 @@ const fetchTrendingVideos = async () => {
     }
     return null;
 }
+
 const displayVideo = (videos) =>
 {
     const listVideos = videos.items.map(video => {
         const li = document.createElement('li');
         li.classList.add('video-list__item');
         li.innerHTML = ` <article class="video-card">
-            <a href="video.html" class="video-card__link">
-                <img src="./image/image1.jpg" 
-                alt="Философия идущего к реке" 
+            <a href="video.html?id=${video.id}" class="video-card__link">
+                <img src="${video.snippet.thumbnails.standart?.url ||
+                video.snippet.thumbnails.high?.url}" 
+                alt="Превью видео ${video.snippet.title}" 
                 class="video-card__thumbnail">
-                <h3 class="video-card__title">Философия идущего к реке</h3>
-                <p class= "video-card__channel">Правое полушарие интроверта</p>
+                <h3 class="video-card__title">${video.snippet.title}</h3>
+                <p class= "video-card__channel">${video.snippet.channelTitle}</p>
                 <p class= "video-card__duration">
-                    31 мин 25 сек
+                    ${video.contentDetails.duration}
                 </p>
             </a>
             <button class="video-card__favorite" type="button" 
-            aria-label="Добавить в избранное, Философия идущего к реке">
+            aria-label="Добавить в избранное, ${video.snippet.title}">
                 <svg class="video-card__icon">
-                    <use class="star-o" xlink:href="image/sprite.svg#star-ob"></use>
+                    <use class="star-o" xlink:href="image/sprite.svg#star-ow"></use>
                     <use class="star" xlink:href="image/sprite.svg#star"></use>
                 </svg>
             </button>
         </article>`;
+        console.log(video.contentDetails.duration);
         return li;
     });
 
     videoListItems.append(...listVideos);
 }
 
-fetchTrendingVideos().then(displayVideo)
+// fetchTrendingVideos().then(displayVideo)
+
+// console.log(parseDuration(time[1]));
+let arr = ["ч", "мин", "сек"];
+let re = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
+let reObj = re.exec('PT13M07S');
+let rsltArr = reObj.slice(1,4);
+let [hours, minutes, seconds] = rsltArr;
+// console.log(rslt.groups.minutes);
