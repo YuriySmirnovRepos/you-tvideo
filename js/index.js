@@ -54,14 +54,19 @@ const displayVideo = (videos) =>
     videoListItems.append(...listVideos);
 }
 
-// fetchTrendingVideos().then(displayVideo)
+fetchTrendingVideos().then(displayVideo)
 
-// console.log(parseDuration(time[1]));
-let time = ["ч", "мин", "сек"];
-let re = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
-let reObj = re.exec('PT13M07S');s
-let rslt = reObj.slice(1,4).map((item, index) => {
-    return item + ` ${time[index]}`
-})
-console.log(rslt);
-// console.log(rslt.groups.minutes);
+const getFormattedDuration = (duration = "") => {
+    if (typeof(duration) != "string") return;
+    let time = ["ч", "мин", "сек"];
+
+    let re = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
+    let reObj = re.exec('PT13M07S');
+    if (rslt[1] === undefined && rslt[2] === undefined && rslt[1] === undefined) return;
+
+    let rslt = reObj.slice(1,4).map((item, index) => {
+        if (typeof(item) === "undefined") return; 
+        else return item + ` ${time[index]}`
+    });
+    return rslt.join(" ");
+}
