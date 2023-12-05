@@ -57,9 +57,11 @@ const displayVideo = (videos) =>
 // fetchTrendingVideos().then(displayVideo)
 
 // console.log(parseDuration(time[1]));
-let arr = ["ч", "мин", "сек"];
+let time = ["ч", "мин", "сек"];
 let re = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
-let reObj = re.exec('PT13M07S');
-let rsltArr = reObj.slice(1,4);
-let [hours, minutes, seconds] = rsltArr;
+let reObj = re.exec('PT13M07S');s
+let rslt = reObj.slice(1,4).map((item, index) => {
+    return item + ` ${time[index]}`
+})
+console.log(rslt);
 // console.log(rslt.groups.minutes);
