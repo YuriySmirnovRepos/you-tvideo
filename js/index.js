@@ -4,6 +4,30 @@ const SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search'
 
 const videoListItems = document.querySelector('.video-list__items');
 
+const favoriteIDs = JSON.parse(localStorage.getItem('favorite') || "[]")
+
+const convertISOReadableDuration = (isoDuration) =>
+{
+    const time = ["ч", "мин", "сек"];
+    const re = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
+    const reObj = re.exec(isoDuration);
+    const result = reObj.slice(1,4).map((item, index) => {
+        if (item === undefined) return;
+        return item + ` ${time[index]}`
+    }).join(" ");
+    return result;
+}
+
+const formatPremierDate = (isoString) =>{
+    const date = new Date(isoString);
+    const formatter = new Intl.DateTimeFormat('ru-RU', {
+        day:"numeric",
+        month: 'short',
+        year: "numeric"
+    });
+    return formatter.format(date);
+}
+
 const fetchTrendingVideos = async () => {
     try {
         const url = new URL(VIDEOS_URL);
@@ -22,7 +46,45 @@ const fetchTrendingVideos = async () => {
     return null;
 }
 
-const displayVideo = (videos) =>
+const fetchFavoriteVideos = async () => {
+    try {
+        if (favoriteIDs.length === 0) 
+        {
+            return {items: []};
+        }
+
+        const url = new URL(VIDEOS_URL);
+        url.searchParams.append('part', 'contentDetails,id,snippet');
+        url.searchParams.append('key', API_KEY);
+        url.searchParams.append('maxResults', 12);
+        url.searchParams.append('id', favoriteIDs.join(','));
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        return await response.json();
+    } catch (error) {
+        console.log('error:', error);
+    }
+    return null;
+}
+
+const fetchVideoData = async (id) => {
+    try {
+        const url = new URL(VIDEOS_URL);
+        url.searchParams.append('part', 'snippet,statistics');
+        url.searchParams.append('key', API_KEY);
+        url.searchParams.append('id', id);
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        return await response.json();
+    } catch (error) {
+        console.log('error:', error);
+    }
+    return null;
+}
+
+const displayListVideo = (videos) =>
 {
     const listVideos = videos.items.map(video => {
         const li = document.createElement('li');
@@ -36,32 +98,99 @@ const displayVideo = (videos) =>
                 <h3 class="video-card__title">${video.snippet.title}</h3>
                 <p class= "video-card__channel">${video.snippet.channelTitle}</p>
                 <p class= "video-card__duration">
-                    ${video.contentDetails.duration}
+                    ${convertISOReadableDuration(video.contentDetails.duration)}
                 </p>
             </a>
-            <button class="video-card__favorite" type="button" 
-            aria-label="Добавить в избранное, ${video.snippet.title}">
+            <button class="video-card__favorite 
+            ${favoriteIDs.includes(video.id) ? "active" : ""}" 
+            type="button" 
+            aria-label="Добавить в избранное, ${video.snippet.title}" data-video-id="${video.id}">
                 <svg class="video-card__icon">
                     <use class="star-o" xlink:href="image/sprite.svg#star-ow"></use>
                     <use class="star" xlink:href="image/sprite.svg#star"></use>
                 </svg>
             </button>
         </article>`;
-        console.log(video.contentDetails.duration);
         return li;
     });
 
     videoListItems.append(...listVideos);
 }
 
-// fetchTrendingVideos().then(displayVideo)
+const displayVideo = ({items:[video]}) => {
+    const videoElem = document.querySelector('.video');
+    videoElem.innerHTML = `<div class="container">
+        <div class="video__player">
+            <iframe class="video__iframe" width="560" height="315" 
+            src="https://www.youtube.com/embed/${video.id}" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; 
+            gyroscope; picture-in-picture; web-share" 
+            allowfullscreen></iframe>
+        </div>
+        <div class="video__container">
+            <div class="video__about">
+                <h3 class="video__title">${video.snippet.title}</h3>
+                <p class="video__channel">${video.snippet.channelTitle}</p>
+                <p class="video__info">
+                    <span class="video__views">${parseInt(video.statistics.viewCount).toLocaleString()} просмотров </span>
+                    <span class="video__premier-date">Дата премьеры: ${formatPremierDate(video.snippet.publishedAt)}</span>
+                </p>
+                <p class="video__description">
+                    ${video.snippet.description}
+                </p>
+            </div>
+            <button type="button" class="video__link favorite">
+                <span class="video__no-favorite">Избранное</span>
+                <span class="video__favorite">В избранном</span>
+                <svg class="video__icon">
+                    <use xlink:href="image/sprite.svg#star-ob"></use>
+                </svg>
+            </button>
+        </div>
+    </div>`
+}
 
-// console.log(parseDuration(time[1]));
-let time = ["ч", "мин", "сек"];
-let re = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
-let reObj = re.exec('PT13M07S');s
-let rslt = reObj.slice(1,4).map((item, index) => {
-    return item + ` ${time[index]}`
-})
-console.log(rslt);
-// console.log(rslt.groups.minutes);
+
+const init = () => {
+    const currentPage = location.pathname.split('/').pop();
+    const urlSearchParams = new URLSearchParams(location.search);
+    const videoId = urlSearchParams.get('id');
+    const searchQuery = urlSearchParams.get('q');
+    if (currentPage === "index.html" || currentPage === '')
+    {
+        fetchTrendingVideos().then(displayListVideo);
+    }else if(currentPage === "video.html" && videoId)
+    {
+        fetchVideoData(videoId).then(displayVideo);
+    } else if(currentPage === "favorite.html")
+    {
+        fetchFavoriteVideos().then(displayListVideo);
+    } else if (currentPage === "search.html" && searchQuery)
+    {
+        console.log(currentPage);
+    }
+
+    document.body.addEventListener('click', ({target}) => {
+        const itemFavorite = target.closest(".video-card__favorite");
+
+        if (itemFavorite)
+        {
+            const videoId = itemFavorite.dataset.videoId;
+
+            if (favoriteIDs.includes(videoId))
+            {
+                favoriteIDs.splice(favoriteIDs.indexOf(videoId), 1);
+                localStorage.setItem('favorite', JSON.stringify(favoriteIDs));
+                itemFavorite.classList.remove('active');
+            }else{
+                favoriteIDs.push(videoId);
+                localStorage.setItem('favorite', JSON.stringify(favoriteIDs));
+                itemFavorite.classList.add('active');
+            }
+        }
+    });
+}
+
+init();

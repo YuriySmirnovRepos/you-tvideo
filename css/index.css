@@ -300,7 +300,7 @@ html {
   }
 
   .video-card__favorite {
-    width: 20px;
+  width: 20px;
     height: 20px;
     position:absolute;
     top: 12px;
@@ -311,7 +311,7 @@ html {
     display:none;
   }
 
-  .video-card__favorite_active .star {
+  .video-card__favorite.active .star {
     display:block;
   }
 
