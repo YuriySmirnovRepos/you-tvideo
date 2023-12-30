@@ -101,7 +101,7 @@ const displayListVideo = (videos) =>
                     ${convertISOReadableDuration(video.contentDetails.duration)}
                 </p>
             </a>
-            <button class="video-card__favorite 
+            <button class="video-card__favorite favorite
             ${favoriteIDs.includes(video.id) ? "active" : ""}" 
             type="button" 
             aria-label="Добавить в избранное, ${video.snippet.title}" data-video-id="${video.id}">
@@ -141,11 +141,12 @@ const displayVideo = ({items:[video]}) => {
                     ${video.snippet.description}
                 </p>
             </div>
-            <button type="button" class="video__link favorite">
-                <span class="video__no-favorite">Избранное</span>
+            <button type="button" class="video__link ${favoriteIDs.includes(video.id) ? "active" : ""} favorite">
+                <span class="video__no-favorite">В избранное</span>
                 <span class="video__favorite">В избранном</span>
                 <svg class="video__icon">
                     <use xlink:href="image/sprite.svg#star-ob"></use>
+                    <use class="star" xlink:href="image/sprite.svg#star"></use>
                 </svg>
             </button>
         </div>
@@ -173,8 +174,8 @@ const init = () => {
     }
 
     document.body.addEventListener('click', ({target}) => {
-        const itemFavorite = target.closest(".video-card__favorite");
-
+        const itemFavorite = target.closest(".video__link") ?? target.closest(".video-card__favorite");
+        console.log(itemFavorite);
         if (itemFavorite)
         {
             const videoId = itemFavorite.dataset.videoId;
