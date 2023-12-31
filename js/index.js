@@ -175,7 +175,6 @@ const init = () => {
 
     document.body.addEventListener('click', ({target}) => {
         const itemFavorite = target.closest(".video__link") ?? target.closest(".video-card__favorite");
-        console.log(itemFavorite);
         if (itemFavorite)
         {
             const videoId = itemFavorite.dataset.videoId;
