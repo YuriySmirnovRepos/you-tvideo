@@ -106,7 +106,7 @@ const displayListVideo = (videos) =>
             type="button" 
             aria-label="Добавить в избранное, ${video.snippet.title}" data-video-id="${video.id}">
                 <svg class="video-card__icon">
-                    <use class="star-o" xlink:href="image/sprite.svg#star-ow"></use>
+                    <use class="star-o" xlink:href="image/sprite.svg#star-w"></use>
                     <use class="star" xlink:href="image/sprite.svg#star"></use>
                 </svg>
             </button>
@@ -145,7 +145,7 @@ const displayVideo = ({items:[video]}) => {
                 <span class="video__no-favorite">В избранное</span>
                 <span class="video__favorite">В избранном</span>
                 <svg class="video__icon">
-                    <use xlink:href="image/sprite.svg#star-ob"></use>
+                    <use xlink:href="image/sprite.svg#star-w"></use>
                     <use class="star" xlink:href="image/sprite.svg#star"></use>
                 </svg>
             </button>

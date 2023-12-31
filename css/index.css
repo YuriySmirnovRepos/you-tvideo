@@ -527,7 +527,6 @@ html {
   .video-list {padding: 40px 0 60px;}
   .video-list__title {font-size: 24px; margin-bottom: 20px;}
   .video-list__items {grid-template-columns: 1fr; gap: 20px;}
-  .video-list__item {margin-left: auto; margin-right: auto;}
 
   .video-card__title {font-size: 18px; width: 80%}
   .video-card__channel {font-size: 16px;}
