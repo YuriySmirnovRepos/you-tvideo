@@ -500,6 +500,8 @@ html {
   .video {padding-top: 40px;}
   .video__container {flex-wrap: wrap; flex-direction: column-reverse; gap:24px;}
   .video__player {margin-bottom: 24px;}
+  .video-card__title {margin-bottom: 10px;}
+  .video-card__channel {margin-bottom: 10px;}
 
   .video-list__items {grid-template-columns: repeat(2, 1fr);}
 }
@@ -528,8 +530,8 @@ html {
   .video-list__title {font-size: 24px; margin-bottom: 20px;}
   .video-list__items {grid-template-columns: 1fr; gap: 20px;}
 
-  .video-card__title {font-size: 18px; width: 80%}
-  .video-card__channel {font-size: 16px;}
+  .video-card__title {font-size: 18px; margin-bottom: 6px;}
+  .video-card__channel {font-size: 16px; margin-bottom: 6px;}
   .video-card__duration {font-size: 14px;}
 
   .footer {height: 180px; padding: 24px 0 32px;}

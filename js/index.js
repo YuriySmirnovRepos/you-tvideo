@@ -28,6 +28,7 @@ const formatPremierDate = (isoString) =>{
     return formatter.format(date);
 }
 
+
 const fetchTrendingVideos = async () => {
     try {
         const url = new URL(VIDEOS_URL);
@@ -82,6 +83,14 @@ const fetchVideoData = async (id) => {
         console.log('error:', error);
     }
     return null;
+}
+
+const fetchSimilarVideos = async (id) => {
+    
+}
+
+const displaySimilarVideos = (videos) => {
+
 }
 
 const displayListVideo = (videos) =>
@@ -141,7 +150,7 @@ const displayVideo = ({items:[video]}) => {
                     ${video.snippet.description}
                 </p>
             </div>
-            <button type="button" class="video__link ${favoriteIDs.includes(video.id) ? "active" : ""} favorite">
+            <button type="button" class="video__link ${favoriteIDs.includes(video.id) ? "active" : ""} favorite" data-video-id="${video.id}">
                 <span class="video__no-favorite">В избранное</span>
                 <span class="video__favorite">В избранном</span>
                 <svg class="video__icon">
