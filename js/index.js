@@ -85,15 +85,26 @@ const fetchVideoData = async (id) => {
     return null;
 }
 
-const fetchSimilarVideos = async (id) => {
-    
+const fetchSimilarVideos = async (queryString) => {
+    console.log(queryString);
+    try {
+        const url = new URL(SEARCH_URL);
+        url.searchParams.append('part', 'snippet');
+        url.searchParams.append('q', queryString);
+        url.searchParams.append('type', "video");
+        url.searchParams.append('key', API_KEY);        
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        return await response.json();
+    } catch (error) {
+        console.log('error:', error);
+    }
+    return null;
 }
 
-const displaySimilarVideos = (videos) => {
 
-}
-
-const displayListVideo = (videos) =>
+const displayListVideo = (videos, isSimilarVideos = true) =>
 {
     const listVideos = videos.items.map(video => {
         const li = document.createElement('li');
@@ -105,11 +116,16 @@ const displayListVideo = (videos) =>
                 alt="Превью видео ${video.snippet.title}" 
                 class="video-card__thumbnail">
                 <h3 class="video-card__title">${video.snippet.title}</h3>
-                <p class= "video-card__channel">${video.snippet.channelTitle}</p>
-                <p class= "video-card__duration">
+                <p class= "video-card__channel">${video.snippet.channelTitle}</p>`
+
+                if (!isSimilarVideos)
+                {
+                    li.innerHTML += `<p class= "video-card__duration">
                     ${convertISOReadableDuration(video.contentDetails.duration)}
-                </p>
-            </a>
+                    </p>`
+                }
+
+            li.innerHTML += `</a>
             <button class="video-card__favorite favorite
             ${favoriteIDs.includes(video.id) ? "active" : ""}" 
             type="button" 
@@ -160,6 +176,7 @@ const displayVideo = ({items:[video]}) => {
             </button>
         </div>
     </div>`
+    return video.snippet.title;
 }
 
 
@@ -173,7 +190,10 @@ const init = () => {
         fetchTrendingVideos().then(displayListVideo);
     }else if(currentPage === "video.html" && videoId)
     {
-        fetchVideoData(videoId).then(displayVideo);
+        fetchVideoData(videoId)
+        .then(displayVideo)
+        .then(fetchSimilarVideos)
+        .then(displayListVideo);
     } else if(currentPage === "favorite.html")
     {
         fetchFavoriteVideos().then(displayListVideo);
