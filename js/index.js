@@ -86,7 +86,6 @@ const fetchVideoData = async (id) => {
 }
 
 const fetchSimilarVideos = async (queryString) => {
-    console.log(queryString);
     try {
         const url = new URL(SEARCH_URL);
         url.searchParams.append('part', 'snippet');
@@ -104,9 +103,10 @@ const fetchSimilarVideos = async (queryString) => {
 }
 
 
-const displayListVideo = (videos, isSimilarVideos = true) =>
+const displayListVideo = (videos, isSimilarVideos = true, currentVideoID = "") =>
 {
-    const listVideos = videos.items.map(video => {
+    let listVideos = videos.items.map(video => {
+        if (video.id.videoId === currentVideoID) return undefined;
         const li = document.createElement('li');
         li.classList.add('video-list__item');
         li.innerHTML = ` <article class="video-card">
@@ -139,6 +139,7 @@ const displayListVideo = (videos, isSimilarVideos = true) =>
         return li;
     });
 
+    listVideos = listVideos.filter(elem => elem != undefined);
     videoListItems.append(...listVideos);
 }
 
@@ -193,7 +194,7 @@ const init = () => {
         fetchVideoData(videoId)
         .then(displayVideo)
         .then(fetchSimilarVideos)
-        .then(displayListVideo);
+        .then((result) => {return displayListVideo(result, true, videoId)});
     } else if(currentPage === "favorite.html")
     {
         fetchFavoriteVideos().then(displayListVideo);
