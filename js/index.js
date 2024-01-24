@@ -85,7 +85,7 @@ const fetchVideoData = async (id) => {
     return null;
 }
 
-const fetchSimilarVideos = async (queryString) => {
+const fetchSearchVideos = async (queryString) => {
     try {
         const url = new URL(SEARCH_URL);
         url.searchParams.append('part', 'snippet');
@@ -103,14 +103,14 @@ const fetchSimilarVideos = async (queryString) => {
 }
 
 
-const displayListVideo = (videos, isSimilarVideos = true, currentVideoID = "") =>
+const displayListVideo = (videos, isSearchVideos = true, currentVideoID = "") =>
 {
     let listVideos = videos.items.map(video => {
         if (video.id.videoId === currentVideoID) return undefined;
         const li = document.createElement('li');
         li.classList.add('video-list__item');
         li.innerHTML = ` <article class="video-card">
-            <a href="video.html?id=${video.id}" class="video-card__link">
+            <a href="video.html?id=${video.id.videoId || video.id}" class="video-card__link">
                 <img src="${video.snippet.thumbnails.standart?.url ||
                 video.snippet.thumbnails.high?.url}" 
                 alt="Превью видео ${video.snippet.title}" 
@@ -118,7 +118,7 @@ const displayListVideo = (videos, isSimilarVideos = true, currentVideoID = "") =
                 <h3 class="video-card__title">${video.snippet.title}</h3>
                 <p class= "video-card__channel">${video.snippet.channelTitle}</p>`
 
-                if (!isSimilarVideos)
+                if (!isSearchVideos)
                 {
                     li.innerHTML += `<p class= "video-card__duration">
                     ${convertISOReadableDuration(video.contentDetails.duration)}
@@ -129,7 +129,7 @@ const displayListVideo = (videos, isSimilarVideos = true, currentVideoID = "") =
             <button class="video-card__favorite favorite
             ${favoriteIDs.includes(video.id) ? "active" : ""}" 
             type="button" 
-            aria-label="Добавить в избранное, ${video.snippet.title}" data-video-id="${video.id}">
+            aria-label="Добавить в избранное, ${video.snippet.title}" data-video-id="${video.id.videoId || video.id}">
                 <svg class="video-card__icon">
                     <use class="star-o" xlink:href="image/sprite.svg#star-w"></use>
                     <use class="star" xlink:href="image/sprite.svg#star"></use>
@@ -186,6 +186,7 @@ const init = () => {
     const urlSearchParams = new URLSearchParams(location.search);
     const videoId = urlSearchParams.get('id');
     const searchQuery = urlSearchParams.get('q');
+    console.log(searchQuery);
     if (currentPage === "index.html" || currentPage === '')
     {
         fetchTrendingVideos().then(displayListVideo);
@@ -193,14 +194,14 @@ const init = () => {
     {
         fetchVideoData(videoId)
         .then(displayVideo)
-        .then(fetchSimilarVideos)
+        .then(fetchSearchVideos)
         .then((result) => {return displayListVideo(result, true, videoId)});
     } else if(currentPage === "favorite.html")
     {
         fetchFavoriteVideos().then(displayListVideo);
     } else if (currentPage === "search.html" && searchQuery)
     {
-        console.log(currentPage);
+        fetchSearchVideos(searchQuery).then(displayListVideo);
     }
 
     document.body.addEventListener('click', ({target}) => {
