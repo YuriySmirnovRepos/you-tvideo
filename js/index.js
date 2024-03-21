@@ -1,4 +1,4 @@
-const API_KEY = 'AIzaSyCrYNj-NCulkqDogzOtMsi6wOOBlWF4qdk';
+const API_KEY = "";
 const VIDEOS_URL = 'https://www.googleapis.com/youtube/v3/videos'
 const SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search'
 
